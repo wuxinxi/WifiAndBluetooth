@@ -21,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.study.adapter.RecycleViewDivider;
 import com.study.adapter.WifiAdapter;
 import com.study.base.BaseActivity;
 import com.study.dialog.CommonAlertDialog;
@@ -62,6 +63,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         refresh.setOnRefreshListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new WifiAdapter(list, getApplicationContext());
+        recyclerView.addItemDecoration(new RecycleViewDivider(this,RecyclerView.HORIZONTAL));
         recyclerView.setAdapter(mAdapter);
         mAdapter.setListener(this);
     }
@@ -143,8 +145,10 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         }
     }
 
+
     /**
      * 刷新
+     * 扫描有点耗时，在子线程中处理
      */
     private void scanWifi() {
         MLog.d("开始扫描wifi列表");
