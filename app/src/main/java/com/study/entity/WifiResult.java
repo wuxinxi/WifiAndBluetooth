@@ -16,7 +16,6 @@ public class WifiResult implements Comparable<WifiResult> {
     public String state;
     //加密方式
     public String capabilities;
-    public int order = -1;
 
     public WifiResult(String ssid, int level, String state, String capabilities) {
         this.ssid = ssid;
@@ -27,6 +26,7 @@ public class WifiResult implements Comparable<WifiResult> {
 
     @Override
     public int compareTo(WifiResult o) {
-        return this.level - o.level;
+
+        return o.level - this.level;
     }
 }

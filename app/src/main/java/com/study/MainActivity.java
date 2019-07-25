@@ -19,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.study.adapter.WifiAdapter;
 import com.study.base.BaseActivity;
@@ -44,7 +45,6 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     private WifiBroadcastReceiver receiver;
     private WifiHandler mHandler;
 
-    private int currentPosition = -1;
 
     @Override
     protected int layoutID() {
@@ -82,17 +82,20 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         receiver = new WifiBroadcastReceiver();
         registerReceiver(receiver, filter);
         mHandler = new WifiHandler(this);
-        scan();
+        refreshWifi();
     }
 
     private void refreshScanWifi(String wifiName, String status) {
         boolean isWifiEnabled = wifiManager.isWifiEnabled();
         if (isWifiEnabled) {
-            scanWifi(wifiName, status);
+            updateWifiStatus(wifiName, status);
         }
     }
 
-    public void scan() {
+    /**
+     * 刷新wifi
+     */
+    public void refreshWifi() {
         boolean isWifiEnabled = wifiManager.isWifiEnabled();
         if (isWifiEnabled) {
             mHandler.post(() -> {
@@ -112,11 +115,18 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         wifiStatus.setChecked(!isWifiEnabled);
         wifiManager.setWifiEnabled(!isWifiEnabled);
         if (isChecked) {
-            scan();
+            refreshWifi();
+        }else {
+            mAdapter.clear();
         }
     }
 
-    private void scanWifi(String wifiName, String status) {
+    /**
+     * 根据wifi名称修改连接状态
+     * @param wifiName 目前连接的wifi 不一定是成功
+     * @param status 连接状态
+     */
+    private void updateWifiStatus(String wifiName, String status) {
         for (WifiResult wifiResult : list) {
             String state = WifiUtil.wifiConnectStatus(wifiResult.ssid, getApplicationContext());
             if (!TextUtils.isEmpty(wifiName)) {
@@ -129,8 +139,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 }
             }
             wifiResult.state = state;
-            mAdapter.notifyItemChanged(currentPosition);
-
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -138,12 +147,21 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
      * 刷新
      */
     private void scanWifi() {
-        currentPosition = -1;
+        MLog.d("开始扫描wifi列表");
         List<ScanResult> scanResults = wifiManager.getScanResults();
         list.clear();
+        MLog.d("扫描个数："+scanResults.size());
+        WifiInfo connectedWifiInfo = WifiUtil.getConnectedWifiInfo(getApplicationContext());
+        String wifiName=null;
+        if (connectedWifiInfo!=null){
+            wifiName=connectedWifiInfo.getSSID();
+        }
         for (ScanResult scanResult : scanResults) {
             String state = WifiUtil.wifiConnectStatus(scanResult.SSID, getApplicationContext());
-            WifiResult wifiResult = new WifiResult(scanResult.SSID, WifiUtil.getLevel(scanResult.level),
+            if (TextUtils.equals("\"" +scanResult.SSID+"\"" ,wifiName)){
+                state="已连接";
+            }
+            WifiResult wifiResult = new WifiResult(scanResult.SSID, WifiManager.calculateSignalLevel(scanResult.level,5),
                     state, scanResult.capabilities);
             list.add(wifiResult);
         }
@@ -152,18 +170,18 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         if (refresh.isRefreshing()) {
             refresh.setRefreshing(false);
         }
+        MLog.d("wifi列表扫描完成");
     }
 
 
     @Override
     public void onRefresh() {
         refresh.setRefreshing(true);
-        scan();
+        refreshWifi();
     }
 
     @Override
     public void onItemClick(int position, WifiResult scanResult) {
-        this.currentPosition = position;
         String capabilities = scanResult.capabilities;
         //无需密码
         if (WifiUtil.getWifiCipher(capabilities) == WifiUtil.WifiCipherType.WIFICIPHER_NOPASS) {
@@ -227,7 +245,32 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             if (TextUtils.isEmpty(action)) {
                 return;
             }
-            if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+            if(WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())){
+                int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
+                switch (state){
+                    case WifiManager.WIFI_STATE_DISABLED:
+                        Toast.makeText(MainActivity.this,"WIFI处于关闭状态",Toast.LENGTH_SHORT).show();
+                        break;
+                    case WifiManager.WIFI_STATE_DISABLING:
+                        Toast.makeText(context, "正在关闭wifi", Toast.LENGTH_SHORT).show();
+                        break;
+                    case WifiManager.WIFI_STATE_ENABLED:
+                        MLog.d("已打开wifi");
+                        Toast.makeText(context, "已打开wifi", Toast.LENGTH_SHORT).show();
+                        //防止刚打开wifi检索到为0
+                        mHandler.postDelayed(MainActivity.this::scanWifi,1000);
+                        break;
+                    case WifiManager.WIFI_STATE_ENABLING:
+                        MLog.d("正在打开wifi");
+                        mHandler.post(()-> refresh.setRefreshing(true));
+                        Toast.makeText(context, "正在打开wifi", Toast.LENGTH_SHORT).show();
+                        break;
+                    case WifiManager.WIFI_STATE_UNKNOWN:
+                        Toast.makeText(MainActivity.this,"未知状态",Toast.LENGTH_SHORT).show();
+                        break;
+
+                }
+            }else  if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                 if (NetworkInfo.State.DISCONNECTED == info.getState()) {
                     //wifi没连接上
@@ -249,7 +292,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
                 //网络列表变化了,重新扫描
                 MLog.e("onReceive(WifiBroadcastReceiver.java:65)网络列表变化了,重新扫描");
-                refreshScanWifi(null, null);
+                refreshWifi();
             }
 
         }

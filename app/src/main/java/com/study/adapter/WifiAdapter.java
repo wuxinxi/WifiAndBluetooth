@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.study.R;
 import com.study.entity.WifiResult;
 import com.study.interfaces.IItemListener;
+import com.study.util.wifi.WifiUtil;
 
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiViewHolder> {
         String ssid = list.get(i).ssid;
         wifiViewHolder.wifiName.setText(ssid);
         wifiViewHolder.wifiSaveStatus.setText(list.get(i).state);
+        wifiViewHolder.wifiSignalIv.setBackgroundResource(WifiUtil.getSignalIv(list.get(i).level));
     }
 
     @Override

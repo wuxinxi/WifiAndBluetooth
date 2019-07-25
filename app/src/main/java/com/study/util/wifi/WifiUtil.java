@@ -6,8 +6,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.text.TextUtils;
 
+import com.study.R;
 import com.study.util.MLog;
 
 import java.util.List;
@@ -141,31 +141,10 @@ public class WifiUtil {
         if (isExist) {
             status = "已保存";
         }
-//        WifiInfo connectedWifiInfo = getConnectedWifiInfo(context);
-//        if (connectedWifiInfo != null && TextUtils.equals("\"" + SSID + "\"", connectedWifiInfo.getSSID())) {
-//            status = "已连接";
-//        }
         return status;
     }
 
-    /**
-     * @param SSID    wifi名称
-     * @param context .
-     * @return 连接状态
-     */
-    public static String wifiConnectStatus2(String SSID, Context context) {
-        String status = "未保存";
-        boolean isExist = isExist(SSID, context) != null;
-        if (isExist) {
-            status = "已保存";
-        }
-        WifiInfo connectedWifiInfo = getConnectedWifiInfo(context);
-        if (connectedWifiInfo != null && TextUtils.equals("\"" + SSID + "\"", connectedWifiInfo.getSSID())
-                && WifiUtil.isExistWifiNetWork(context)) {
-            status = "已连接";
-        }
-        return status;
-    }
+
 
 
     /**
@@ -199,6 +178,20 @@ public class WifiUtil {
             return 3;
         } else {
             return 4;
+        }
+    }
+
+    public static int getSignalIv(int level){
+        switch (level) {
+            case 1:
+            case 0:
+                return R.drawable.ic_wifi_1;
+            case 2:
+                return R.drawable.ic_wifi_2;
+            case 3:
+                return R.drawable.ic_wifi_3;
+            default:
+               return R.drawable.ic_wifi_4;
         }
     }
 

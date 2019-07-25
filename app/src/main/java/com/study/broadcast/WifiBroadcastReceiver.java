@@ -63,6 +63,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
             //网络列表变化了,重新扫描
             MLog.e("onReceive(WifiBroadcastReceiver.java:65)网络列表变化了,重新扫描");
+
         }
     }
 }
