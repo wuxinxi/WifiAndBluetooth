@@ -249,10 +249,10 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
                 switch (state){
                     case WifiManager.WIFI_STATE_DISABLED:
-                        Toast.makeText(MainActivity.this,"WIFI处于关闭状态",Toast.LENGTH_SHORT).show();
+                        MLog.d("wifi处于关闭状态");
                         break;
                     case WifiManager.WIFI_STATE_DISABLING:
-                        Toast.makeText(context, "正在关闭wifi", Toast.LENGTH_SHORT).show();
+                        MLog.d("正在关闭wifi");
                         break;
                     case WifiManager.WIFI_STATE_ENABLED:
                         MLog.d("已打开wifi");
