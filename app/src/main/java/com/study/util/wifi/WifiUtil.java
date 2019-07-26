@@ -19,10 +19,6 @@ import java.util.List;
  * TODO:一句话描述
  */
 public class WifiUtil {
-    public static final String WIFI_STATE_CONNECT = "已连接";
-    public static final String WIFI_STATE_ON_CONNECTING = "正在连接";
-    public static final String WIFI_STATE_UNSAVED = "未保存";
-    public static final String WIFI_STATE_SAVED = "已保存";
 
     public enum WifiCipherType {
         WIFICIPHER_WEP, WIFICIPHER_WPA, WIFICIPHER_NOPASS, WIFICIPHER_INVALID
@@ -121,9 +117,11 @@ public class WifiUtil {
     public static WifiConfiguration isExist(String SSID, Context context) {
         WifiManager wifimanager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         List<WifiConfiguration> existingConfigs = wifimanager.getConfiguredNetworks();
-        for (WifiConfiguration existingConfig : existingConfigs) {
-            if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
-                return existingConfig;
+        if (existingConfigs != null) {
+            for (WifiConfiguration existingConfig : existingConfigs) {
+                if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
+                    return existingConfig;
+                }
             }
         }
         return null;
@@ -143,8 +141,6 @@ public class WifiUtil {
         }
         return status;
     }
-
-
 
 
     /**
@@ -181,7 +177,7 @@ public class WifiUtil {
         }
     }
 
-    public static int getSignalIv(int level){
+    public static int getSignalIv(int level) {
         switch (level) {
             case 1:
             case 0:
@@ -191,7 +187,7 @@ public class WifiUtil {
             case 3:
                 return R.drawable.ic_wifi_3;
             default:
-               return R.drawable.ic_wifi_4;
+                return R.drawable.ic_wifi_4;
         }
     }
 

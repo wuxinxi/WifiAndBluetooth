@@ -38,7 +38,9 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiViewHolder> {
     }
 
     public void clear() {
-        this.list.clear();
+        if (list != null && !list.isEmpty()) {
+            list.clear();
+        }
         notifyDataSetChanged();
     }
 
