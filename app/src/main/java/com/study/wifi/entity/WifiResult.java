@@ -1,4 +1,4 @@
-package com.study.entity;
+package com.study.wifi.entity;
 
 /**
  * 作者：Tangren on 2019-07-25

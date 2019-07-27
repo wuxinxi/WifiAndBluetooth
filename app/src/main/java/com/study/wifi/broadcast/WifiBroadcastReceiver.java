@@ -1,4 +1,4 @@
-package com.study.broadcast;
+package com.study.wifi.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
 import com.study.util.MLog;
-import com.study.util.wifi.WifiUtil;
+import com.study.wifi.util.WifiUtil;
 
 /**
  * 作者：Tangren on 2019-07-25

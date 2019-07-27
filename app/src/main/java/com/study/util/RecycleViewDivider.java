@@ -1,4 +1,4 @@
-package com.study.adapter;
+package com.study.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;

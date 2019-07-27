@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".BluetoothActivity">
+        <activity android:name=".bluetooth.BluetoothActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,8 +32,20 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name="com.inuker.bluetooth.library.BluetoothService" />
+        <receiver android:name=".bluetooth.manage.BluetoothManager$SearchBluetoothDeviceReceiver">
+            <intent-filter>
+                <!-- 添加配对请求 -->
+                <!--<action android:name="android.bluetooth.device.action.PAIRING_REQUEST" />-->
+                <!-- 开始扫描附近的蓝牙设备 -->
+                <action android:name="android.bluetooth.adapter.action.DISCOVERY_STARTED" />
+                <!-- 结束扫描附近的蓝牙设备 -->
+                <action android:name="android.bluetooth.adapter.action.DISCOVERY_FINISHED" />
+                <!-- 扫描到蓝牙设备 -->
+                <action android:name="android.bluetooth.device.action.FOUND" />
+
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

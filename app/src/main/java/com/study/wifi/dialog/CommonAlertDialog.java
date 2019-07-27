@@ -1,4 +1,4 @@
-package com.study.dialog;
+package com.study.wifi.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.study.R;
-import com.study.interfaces.IDialogListener;
+import com.study.listener.IDialogListener;
 
 /**
  * 作者：Tangren on 2019-07-04

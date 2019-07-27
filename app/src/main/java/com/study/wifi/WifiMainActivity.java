@@ -1,4 +1,4 @@
-package com.study;
+package com.study.wifi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,14 +21,15 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.study.util.RecycleViewDivider;
-import com.study.wifi.adapter.WifiAdapter;
+import com.study.R;
 import com.study.base.BaseActivity;
-import com.study.wifi.dialog.CommonAlertDialog;
-import com.study.wifi.entity.WifiResult;
 import com.study.listener.IItemListener;
 import com.study.util.MLog;
 import com.study.util.ThreadPoolManage;
+import com.study.util.RecycleViewDivider;
+import com.study.wifi.adapter.WifiAdapter;
+import com.study.wifi.dialog.CommonAlertDialog;
+import com.study.wifi.entity.WifiResult;
 import com.study.wifi.util.WifiUtil;
 
 import java.lang.ref.WeakReference;
@@ -37,7 +38,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class MainActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener,
+public class WifiMainActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener,
         SwipeRefreshLayout.OnRefreshListener, IItemListener<WifiResult> {
     private Switch wifiStatus;
     private SwipeRefreshLayout refresh;
@@ -199,9 +200,9 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             if (tempConfig == null) {
                 WifiConfiguration exist = WifiUtil.createWifiConfig(scanResult.ssid, null,
                         WifiUtil.WifiCipherType.WIFICIPHER_NOPASS);
-                WifiUtil.addNetWork(exist, MainActivity.this);
+                WifiUtil.addNetWork(exist, WifiMainActivity.this);
             } else {
-                WifiUtil.addNetWork(tempConfig, MainActivity.this);
+                WifiUtil.addNetWork(tempConfig, WifiMainActivity.this);
             }
         } else {
             //输入密码
@@ -220,7 +221,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                         .setPositiveButton("连接", (dialog, which) -> WifiUtil.addNetWork(tempConfig, getApplicationContext())).show();
                 return;
             }
-            CommonAlertDialog dialog = new CommonAlertDialog(MainActivity.this).setOnDialogListener(content -> {
+            CommonAlertDialog dialog = new CommonAlertDialog(WifiMainActivity.this).setOnDialogListener(content -> {
                 WifiConfiguration wifiConfiguration = WifiUtil.createWifiConfig(scanResult.ssid, content, WifiUtil.getWifiCipher(capabilities));
                 WifiUtil.addNetWork(wifiConfiguration, getApplicationContext());
             });
@@ -229,16 +230,16 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     }
 
     static class WifiHandler extends Handler {
-        private WeakReference<MainActivity> weakReference;
+        private WeakReference<WifiMainActivity> weakReference;
 
-        public WifiHandler(MainActivity activity) {
+        public WifiHandler(WifiMainActivity activity) {
             weakReference = new WeakReference<>(activity);
         }
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            MainActivity activity = weakReference.get();
+            WifiMainActivity activity = weakReference.get();
             if (activity != null) {
                 switch (msg.what) {
                     case 0:
@@ -286,7 +287,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                         Toast.makeText(context, "正在打开wifi", Toast.LENGTH_SHORT).show();
                         break;
                     case WifiManager.WIFI_STATE_UNKNOWN:
-                        Toast.makeText(MainActivity.this, "未知状态", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WifiMainActivity.this, "未知状态", Toast.LENGTH_SHORT).show();
                         break;
 
                 }

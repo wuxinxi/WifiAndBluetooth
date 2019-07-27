@@ -1,4 +1,4 @@
-package com.study.adapter;
+package com.study.wifi.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.study.R;
-import com.study.entity.WifiResult;
-import com.study.interfaces.IItemListener;
+import com.study.wifi.entity.WifiResult;
+import com.study.listener.IItemListener;
 
 import java.util.List;
 

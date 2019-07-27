@@ -1,4 +1,4 @@
-package com.study.util.wifi;
+package com.study.wifi.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

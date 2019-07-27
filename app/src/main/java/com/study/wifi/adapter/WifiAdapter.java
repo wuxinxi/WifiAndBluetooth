@@ -1,4 +1,4 @@
-package com.study.adapter;
+package com.study.wifi.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.study.R;
-import com.study.entity.WifiResult;
-import com.study.interfaces.IItemListener;
-import com.study.util.wifi.WifiUtil;
+import com.study.wifi.entity.WifiResult;
+import com.study.listener.IItemListener;
+import com.study.wifi.util.WifiUtil;
 
 import java.util.List;
 
