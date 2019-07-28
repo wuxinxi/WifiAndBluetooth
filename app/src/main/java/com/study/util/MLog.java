@@ -1,5 +1,9 @@
 package com.study.util;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 
 /**
@@ -86,7 +90,7 @@ public class MLog {
     }
 
     public static void e(Throwable e) {
-        e(e, "");
+        print(E, getExectionStr(e));
     }
 
     public static void e(Throwable e, String msg) {
@@ -215,5 +219,45 @@ public class MLog {
             } catch (Exception e1) {
                 System.out.println(tag + ": " + message);
             }
+    }
+
+    /**
+     * @param e .
+     * @return 异常具体信息
+     */
+    public static String getExectionStr(Throwable e) {
+        if (e == null) {
+            return "未知错误UNK";
+        }
+        Writer writer = null;
+        PrintWriter pw = null;
+        try {
+            writer = new StringWriter();
+            pw = new PrintWriter(writer);
+            e.printStackTrace(pw);
+            Throwable cause = e.getCause();
+            while (cause != null) {
+                cause.printStackTrace(pw);
+                cause = cause.getCause();
+            }
+            return writer.toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.toString();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                writer = null;
+            }
+
+            if (pw != null) {
+                pw.close();
+                pw = null;
+            }
+        }
     }
 }

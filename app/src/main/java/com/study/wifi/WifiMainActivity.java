@@ -51,7 +51,7 @@ public class WifiMainActivity extends BaseActivity implements CompoundButton.OnC
 
     @Override
     protected int layoutID() {
-        return R.layout.activity_main;
+        return R.layout.activity_wifi;
     }
 
     @Override

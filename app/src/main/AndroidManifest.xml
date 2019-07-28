@@ -12,6 +12,7 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -24,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".bluetooth.BluetoothActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,17 +36,25 @@
         <receiver android:name=".bluetooth.manage.BluetoothManager$SearchBluetoothDeviceReceiver">
             <intent-filter>
                 <!-- 添加配对请求 -->
-                <!--<action android:name="android.bluetooth.device.action.PAIRING_REQUEST" />-->
+                <action android:name="android.bluetooth.device.action.PAIRING_REQUEST" />
                 <!-- 开始扫描附近的蓝牙设备 -->
                 <action android:name="android.bluetooth.adapter.action.DISCOVERY_STARTED" />
                 <!-- 结束扫描附近的蓝牙设备 -->
                 <action android:name="android.bluetooth.adapter.action.DISCOVERY_FINISHED" />
                 <!-- 扫描到蓝牙设备 -->
                 <action android:name="android.bluetooth.device.action.FOUND" />
-
+                <!--检索状态-->
                 <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+                <!--配对状态-->
+                <action android:name="android.bluetooth.device.action.BOND_STATE_CHANGED" />
+                <!--连接状态-->
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED"/>
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
             </intent-filter>
         </receiver>
+
+        <activity android:name=".wifi.WifiMainActivity"/>
+        <activity android:name=".bluetooth.BluetoothActivity"/>
     </application>
 
 </manifest>

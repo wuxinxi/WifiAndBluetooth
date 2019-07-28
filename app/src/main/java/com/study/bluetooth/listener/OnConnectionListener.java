@@ -10,6 +10,28 @@ import android.bluetooth.BluetoothDevice;
  */
 public interface OnConnectionListener {
     /**
+     * 配对中
+     *
+     * @param device 设备信息
+     */
+    void onPairing(BluetoothDevice device);
+
+    /**
+     * 配对成功
+     *
+     * @param device 设备信息
+     */
+    void onPairSuccess(BluetoothDevice device);
+
+    /**
+     * 配对失败
+     *
+     * @param e 失败原因
+     */
+    void onPairFail(BluetoothDevice device, Exception e);
+
+
+    /**
      * 正在连接
      */
     void onConnecting();
@@ -19,7 +41,7 @@ public interface OnConnectionListener {
      *
      * @param device 设备信息
      */
-    void onConnetSuccess(BluetoothDevice device);
+    void onConnectSuccess(BluetoothDevice device);
 
     /**
      * 连接失败

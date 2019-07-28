@@ -21,13 +21,11 @@ import java.util.List;
  */
 public class BluetoothAdapter extends RecyclerView.Adapter<BluetoothHolder> {
     private List<BluetoothDevice> list;
-    private Context context;
     private LayoutInflater inflater;
     private IItemListener<BluetoothDevice> listener;
 
-    public BluetoothAdapter(List<BluetoothDevice> list,Context context) {
+    public BluetoothAdapter(List<BluetoothDevice> list, Context context) {
         this.list=list;
-        this.context = context;
         inflater = LayoutInflater.from(context);
     }
 
@@ -41,7 +39,6 @@ public class BluetoothAdapter extends RecyclerView.Adapter<BluetoothHolder> {
             list.add(device);
             notifyDataSetChanged();
         }
-
     }
 
     public void clear() {

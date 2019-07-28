@@ -66,11 +66,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        //勾选了再不提醒
-                        //提示用户授予权限->去设置中给予权限
                         noPermission();
                     } else {
-                        //授权被拒绝，并且勾选了不再提醒
                         noPermission();
                     }
                 }

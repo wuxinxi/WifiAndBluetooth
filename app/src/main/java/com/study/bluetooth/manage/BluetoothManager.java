@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.study.bluetooth.listener.OnBluetoothStateListener;
+import com.study.bluetooth.listener.OnConnectionListener;
 import com.study.bluetooth.listener.OnDiscoveryDeviceListener;
 import com.study.util.MLog;
 
@@ -26,6 +27,10 @@ public class BluetoothManager {
 
     public BluetoothManager() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    }
+
+    public BluetoothAdapter getBluetoothAdapter() {
+        return bluetoothAdapter;
     }
 
     /**
@@ -110,12 +115,18 @@ public class BluetoothManager {
 
     private static OnBluetoothStateListener onBluetoothStateListener;
 
-    public  void setOnDiscoveryDeviceListener(OnDiscoveryDeviceListener onDiscoveryDeviceListener) {
+    private static OnConnectionListener onConnectionListener;
+
+    public void setOnDiscoveryDeviceListener(OnDiscoveryDeviceListener onDiscoveryDeviceListener) {
         BluetoothManager.onDiscoveryDeviceListener = onDiscoveryDeviceListener;
     }
 
-    public  void setOnBluetoothStateListener(OnBluetoothStateListener onBluetoothStateListener) {
+    public void setOnBluetoothStateListener(OnBluetoothStateListener onBluetoothStateListener) {
         BluetoothManager.onBluetoothStateListener = onBluetoothStateListener;
+    }
+
+    public  void setOnConnectionListener(OnConnectionListener onConnectionListener) {
+        BluetoothManager.onConnectionListener = onConnectionListener;
     }
 
     public void removeOnDiscoveryDeviceListener() {
@@ -130,6 +141,14 @@ public class BluetoothManager {
         }
     }
 
+    public void removeOnConnectionListener() {
+        if (onConnectionListener != null) {
+            onConnectionListener = null;
+        }
+    }
+
+
+
     /**
      * 检索蓝牙设备的广播
      */
@@ -141,7 +160,6 @@ public class BluetoothManager {
             if (TextUtils.isEmpty(action)) {
                 return;
             }
-            assert action != null;
             switch (action) {
                 case BluetoothDevice.ACTION_FOUND:
                     //发现设备
@@ -193,6 +211,46 @@ public class BluetoothManager {
                             break;
                         default:
                             break;
+                    }
+                    break;
+                case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
+                    MLog.d("onReceive(SearchBluetoothDeviceReceiver.java:202)蓝牙连接状态改变");
+                    device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    switch (device.getBondState()) {
+                        case BluetoothDevice.BOND_NONE:
+                            MLog.d("onReceive(SearchBluetoothDeviceReceiver.java:207)取消配对");
+                            if (onConnectionListener != null) {
+                                onConnectionListener.onPairFail(device,new IllegalStateException("取消配对"));
+                            }
+                            break;
+                        case BluetoothDevice.BOND_BONDING:
+                            MLog.d("onReceive(SearchBluetoothDeviceReceiver.java:210)配对中");
+                            if (onConnectionListener != null) {
+                                onConnectionListener.onPairing(device);
+                            }
+                            break;
+                        case BluetoothDevice.BOND_BONDED:
+                            MLog.d("onReceive(SearchBluetoothDeviceReceiver.java:213)配对成功");
+                            if (onConnectionListener != null) {
+                                onConnectionListener.onPairSuccess(device);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case BluetoothDevice.ACTION_ACL_CONNECTED:
+                    MLog.d("onReceive(SearchBluetoothDeviceReceiver.java:213)蓝牙已连接");
+                    device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    if (onConnectionListener != null) {
+                        onConnectionListener.onConnectSuccess(device);
+                    }
+                    break;
+                case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                    device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    MLog.d("onReceive(SearchBluetoothDeviceReceiver.java:213)蓝牙被中断了：" + device.getName());
+                    if (onConnectionListener != null) {
+                        onConnectionListener.onConnectLost(new IllegalStateException("蓝牙被中断了"));
                     }
                     break;
                 default:
