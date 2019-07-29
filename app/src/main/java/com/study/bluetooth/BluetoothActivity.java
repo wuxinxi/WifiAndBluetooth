@@ -41,7 +41,6 @@ public class BluetoothActivity extends BaseActivity implements OnBluetoothStateL
     private Switch bluStatus;
     private BluetoothManager bluetoothManager;
     private ProgressBar progressBar;
-    private Button refresh;
     private BluetoothAdapter boundAdapter;
     private BluetoothAdapter adapter;
     private List<BluetoothDevice> list = new ArrayList<>();
@@ -74,7 +73,7 @@ public class BluetoothActivity extends BaseActivity implements OnBluetoothStateL
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         RecyclerView recyclerViewBound = findViewById(R.id.recyclerViewBound);
         progressBar = findViewById(R.id.progressBar);
-        refresh = findViewById(R.id.refresh);
+        Button refresh = findViewById(R.id.refresh);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new RecycleViewDivider(this, RecyclerView.HORIZONTAL));
         recyclerViewBound.setLayoutManager(new LinearLayoutManager(this));
@@ -203,8 +202,8 @@ public class BluetoothActivity extends BaseActivity implements OnBluetoothStateL
         boundAdapter.addDatas(device);
         new ConnectThread(device).start();
         //配对成功将其移出可用设备中
-        if (list!=null&&!list.isEmpty()){
-            if (list.contains(device)){
+        if (list != null && !list.isEmpty()) {
+            if (list.contains(device)) {
                 list.remove(device);
                 adapter.refreshDatas(list);
             }
@@ -226,22 +225,22 @@ public class BluetoothActivity extends BaseActivity implements OnBluetoothStateL
 
     @Override
     public void onConnecting() {
-
+        Toast.makeText(this, "连接中", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectSuccess(BluetoothDevice device) {
-
+        Toast.makeText(this, "连接成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectFail(Exception e) {
-
+        Toast.makeText(this, "连接失败", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectLost(Exception e) {
-
+        Toast.makeText(this, "连接丢失", Toast.LENGTH_SHORT).show();
     }
 
     @Override
