@@ -20,6 +20,7 @@ public class FileThread extends Thread {
     private OnFileProgressListener onFileProgressListener;
     private String sourcePath;
     private String newPath;
+    private boolean isOk = true;
 
     /**
      * @param sourcePath 源路径
@@ -43,7 +44,7 @@ public class FileThread extends Thread {
             }
             return;
         }
-        if (onFileProgressListener != null) {
+        if (onFileProgressListener != null && isOk) {
             onFileProgressListener.onSuccess();
         }
     }
@@ -73,6 +74,7 @@ public class FileThread extends Thread {
 
         } catch (Exception e) {
             MLog.e(e);
+            isOk = false;
             if (onFileProgressListener != null) {
                 onFileProgressListener.onFail(e);
             }
@@ -122,6 +124,7 @@ public class FileThread extends Thread {
             if (onFileProgressListener != null) {
                 onFileProgressListener.onFail(e);
             }
+            isOk = false;
         }
 
     }
